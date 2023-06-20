@@ -1,9 +1,3 @@
-//import headphone1 from './assets/headphone1.jpg'
-//import headphone2 from './assets/headphone2.jpg'
-//import headphone3 from './assets/headphone3.jpg'
-//import appleairpods from './assets/apple-airpods.jpg'
-//import headphonewhite from './assets/headphone-white.jpg'
-
 export const cartItems = [
    '123', '345'
 ]
@@ -14,30 +8,30 @@ export const products = [
 id:'123',
 name:'ath-m50x Black wireless',
 price: '$29.99',
-//image: headphone1
+imageUrl: '/images/headphone1.jpg',
 },
 {
     id:'234',
     name:'k-240 black wired headphones',
     price: '$24.99',
-    //image: headphone2
+    imageUrl: '/images/headphone2.jpg',
     },
     {
         id:'345',
         name:'Wireless Playstation black headphones',
         price: '$49.99',
-      //  image: headphone3
+        imageUrl: '/images/headphone3.jpg',
         },
         {
             id:'456',
             name:'Apple air pods',
             price: '$100',
-         //   image: appleairpods
+            imageUrl: '/images/apple-airpods.jpg',
         },
         {
             id:'567',
             name:'wireless white headphones',
             price: '$20.00',
-          //  image: headphonewhite
+            imageUrl: '/images/headphone-white.jpg',
         }    
 ]
