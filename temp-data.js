@@ -5,18 +5,7 @@
 //import headphonewhite from './assets/headphone-white.jpg'
 
 export const cartItems = [
-    {
-        id:'123',
-        name:'ath-m50x Black wireless',
-        price: '$29.99',
-        //image: headphone1
-        },
-        {
-            id:'234',
-            name:'k-240 black wired headphones',
-            price: '$24.99',
-            //image: headphone2
-            }
+   '123', '345'
 ]
 
 
