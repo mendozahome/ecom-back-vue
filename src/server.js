@@ -11,11 +11,11 @@ let products = productsRaw;
 
 // db connection 
 let db
-connectToDb((err) => {
-if(!err){
-app.listen(8000, () => {
-console.log('server is listening on port 8000')
-    })
+    connectToDb((err) => {
+        if(!err){
+            app.listen(8000, () => {
+                console.log('server is listening on port 8000')
+                })
     db = getDb()
 }
 })
@@ -27,50 +27,61 @@ app.use(cors())
 
 
 app.get('/hello', (req, res) =>{
-    let items = [];
-    db.collection(process.env.MONGO_COLLECTION)
-    .find()   // cursor toArray forEach
-    .sort({ name: 1})
-    .forEach(item =>  items.push(item))
-    .then(() =>{
-        res.status(200).json(items)
-    })
-    .catch(() => {
-        res.status(500).json({error: 'could not fetch the document'})
-    })
-
-});
+    });
 
 app.get('/products', (req, res) =>{
-    res.json(products)
-})
+    let products = [];
+    db.collection(process.env.MONGO_COLLECTION)
+      .find()   // cursor toArray forEach
+        .sort({ name: 1})
+            .forEach(item =>  products.push(item))
+                .then(() =>{
+                    res.status(200).json(products)
+                    })
+                        .catch(() => {
+                            res.status(500).json({error: 'could not fetch the document'})
+    })
+    })
 
-function populateCartIds(ids){
-    return ids.map(id => products.find(product => product.id === id) )
+async function populateCartIds(ids){
+    return Promise.all(ids.map(id => db.collection(process.env.MONGO_COLLECTION).findOne({ id })) )
 }
 
-app.get('/cart', (req, res) =>{
-    const populatedCart = populateCartIds(cartItems)
-    res.json(populatedCart)
+app.get('/users/:userId/cart', async (req, res) =>{
+    const user = await db.collection('users')
+        .findOne({ id: req.params.userId})
+    const populatedCart = await populateCartIds(user.cartItems)
+        res.json(populatedCart)
 })
 
-app.get('/products/:productId', (req, res) =>{
+app.get('/products/:productId',async (req, res) =>{
     const productId = req.params.productId;
-    const product = products.find(product => product.id === productId);
-    res.json(product)
+    const product = await db.collection(process.env.MONGO_COLLECTION).findOne({ id: productId});
+        res.json(product)
 })
-
-app.post('/cart', (req, res) => {
+app.post('/users/:userId/cart', async (req, res) => {
+    const userId = req.params.userId;
     const productId = req.body.id;
-    cartItems.push(productId);
-    const populateCart = populateCartIds(cartItems)
-    res.json(populateCart);
+
+        await db.collection('users').updateOne({ id: userId },{
+            $addToSet: { cartItems: productId }
+    });
+    const user = await db.collection('users')
+        .findOne({ id: req.params.userId });
+    const populatedCart = await populateCartIds(user.cartItems)
+        res.json(populatedCart);
 })
 
-app.delete('/cart/:productId', (req,res) =>{
+app.delete('/users/:userId/cart/:productId',async (req,res) =>{
+    const userId = req.params.userId;
     const productId = req.params.productId;
-    cartItems = cartItems.filter(id => id !== productId)
-    const populateCart = populateCartIds(cartItems)
-    res.json(populateCart)
+
+        await db.collection('users').updateOne({ id: userId }, {
+            $pull: { cartItems: productId},
+    });
+    const user = await db.collection('users')
+        .findOne({ id: req.params.userId });
+    const populatedCart = await populateCartIds(user.cartItems)
+        res.json(populatedCart);
 })
 
