@@ -1,19 +1,44 @@
 import express from "express"
 import { cartItems as cartItemsRaw, products as productsRaw } from './../temp-data'
 import cors from "cors"
-import db from './index'
+import { connectToDb, getDb } from "./index";
+
+require('dotenv').config()
+
 
 let cartItems = cartItemsRaw;
 let products = productsRaw;
+
+// db connection 
+let db
+connectToDb((err) => {
+if(!err){
+app.listen(8000, () => {
+console.log('server is listening on port 8000')
+    })
+    db = getDb()
+}
+})
 
 
 const app = express()
 app.use(express.json())
 app.use(cors())
-db()
+
 
 app.get('/hello', (req, res) =>{
-    res.send('hello!');
+    let items = [];
+    db.collection(process.env.MONGO_COLLECTION)
+    .find()   // cursor toArray forEach
+    .sort({ name: 1})
+    .forEach(item =>  items.push(item))
+    .then(() =>{
+        res.status(200).json(items)
+    })
+    .catch(() => {
+        res.status(500).json({error: 'could not fetch the document'})
+    })
+
 });
 
 app.get('/products', (req, res) =>{
@@ -49,7 +74,3 @@ app.delete('/cart/:productId', (req,res) =>{
     res.json(populateCart)
 })
 
-
-app.listen(8000, () => {
-    console.log('server is listening on port 8000')
-})
