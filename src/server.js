@@ -2,12 +2,11 @@ import express from "express"
 import cors from "cors"
 import { connectToDb, getDb } from "./index";
 import path from 'path';
-import { fileURLToPath } from 'url';
+
 
 require('dotenv').config()
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+
 
 // db connection 
 let db
