@@ -11,11 +11,6 @@ require('dotenv').config()
 let db
     connectToDb((err) => {
         if(!err){
-//render change
-            app.get('*', (req,res) => {
-                res.sendFile(path.join(_dirname, '../dist/index.html'))
-            });
-
 
             app.listen(port, () => {
                 console.log('server is listening on port' + port)
@@ -105,3 +100,7 @@ app.delete('/api/users/:userId/cart/:productId',async (req,res) =>{
         res.json(populatedCart);
 })
 
+//render change
+app.get('*', (req,res) => {
+    res.sendFile(path.join(_dirname, '../dist/index.html'))
+});
