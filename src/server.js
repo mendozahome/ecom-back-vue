@@ -11,19 +11,33 @@ require('dotenv').config()
 let db
     connectToDb((err) => {
         if(!err){
-            app.listen(8000, () => {
-                console.log('server is listening on port 8000')
+//render change
+            app.get('*', (req,res) => {
+                res.sendFile(path.join(_dirname, '../dist/index.html'))
+            });
+
+
+            app.listen(port, () => {
+                console.log('server is listening on port' + port)
                 })
     db = getDb()
 }
 })
 
+const port = process.env.PORT || 8000;
 
 const app = express()
 app.use(express.json())
 app.use(cors())
 
 app.use('/images', express.static(path.join(__dirname, '../assets')) )
+
+
+//changes for render
+app.use(express.static(
+    path.resolve(__dirname, '../dist'),
+    { maxAge: '1y', etag: false},
+));
 
 app.get('/hello', (req, res) =>{
     });
