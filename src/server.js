@@ -103,5 +103,5 @@ app.delete('/api/users/:userId/cart/:productId',async (req,res) =>{
 
 //render change
 app.get('*', (req,res) => {
-    res.sendFile(path.join(_dirname, '../dist/index.html'))
+    res.sendFile(path.join(__dirname, '../dist/index.html'))
 });
